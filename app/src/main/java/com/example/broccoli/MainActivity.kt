@@ -18,7 +18,5 @@ class MainActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this).get(FormViewModel::class.java)
         binding.viewModel = viewModel
 
-        viewModel.validate()
-
     }
 }

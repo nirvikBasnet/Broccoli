@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Broccoli</string>
+    <string name="header_title"><![CDATA[Welcome to Broccoli & Co.]]></string>
 </resources>

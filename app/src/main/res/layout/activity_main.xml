@@ -1,42 +1,124 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
   >
 
     <data>
+        <import type="android.view.View"/>
         <variable
             name="viewModel"
             type="com.example.broccoli.presentation.FormViewModel" />
+        <variable
+            name="name"
+            type="String" />
+        <variable
+            name="email"
+            type="String" />
+        <variable
+            name="confirmEmail"
+            type="String" />
     </data>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+
 
     <LinearLayout
         android:layout_width="match_parent"
+        android:background="@color/white"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:orientation="vertical"
+        >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="25sp"
+            android:gravity="center"
+            android:text="@string/header_title"
+            />
+        <Button
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:backgroundTint="#1f2918"
+            android:text="Invite"
+            android:onClick="@{() -> viewModel.toggleVisibility()}"
+         />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:visibility="@{viewModel.visible ? View.VISIBLE : View.GONE}"
+        android:layout_width="match_parent"
+        android:background="@color/white"
+        android:layout_margin="10dp"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <EditText
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/name_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Enter your Name"
-            android:text="@={viewModel.name}"
-            android:error="@{viewModel.nameError}"/>
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:hint="Name"
+            app:error="@{viewModel.nameError}"
+            >
 
-        <EditText
-            android:text="@={viewModel.email}"
-            android:error="@{viewModel.emailError}"
-            android:hint="Enter your Email"
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@={name}" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/email_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:hint="Email"
+            app:error="@{viewModel.emailError}"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@={email}" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/confirm_email_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:hint="Confirm Email"
+            app:error="@{viewModel.confirmEmailError}"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@={confirmEmail}" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:backgroundTint="#305224"
+            android:onClick="@{()->viewModel.sendUserData(name,email,confirmEmail)}"
+            android:text="submit"
             />
 
-        <EditText
-            android:text="@={viewModel.confirmEmail}"
-            android:error="@{viewModel.confirmEmailError}"
-            android:hint="Confirm your Email"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-        />
 
-
+    </LinearLayout>
     </LinearLayout>
 
 
