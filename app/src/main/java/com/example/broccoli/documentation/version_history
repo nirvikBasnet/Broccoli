@@ -1,0 +1,9 @@
+version : 1.0.0
+Schema : 1
+Coder : Nirvik
+Date : 09/01/2023
+Changes :
+-Initialized Project Structured
+-Basic form UI created for testing validation logic
+-Field validation started
+----------------------------
