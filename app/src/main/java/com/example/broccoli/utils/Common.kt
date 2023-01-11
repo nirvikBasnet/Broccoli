@@ -1,6 +1,8 @@
 package com.example.broccoli.utils
 
 import android.util.Patterns
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 
 class LengthRule(private val length: Int) {
 

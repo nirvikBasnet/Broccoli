@@ -1,19 +1,20 @@
 package com.example.broccoli.presentation
-
-import android.util.Log
 import androidx.databinding.ObservableField
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.broccoli.domain.model.User
-import com.example.broccoli.domain.model.UserService
+import com.example.broccoli.repository.Repository
 import com.example.broccoli.utils.EmailRule
 import com.example.broccoli.utils.LengthRule
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
+import retrofit2.Response
 
-class FormViewModel : ViewModel() {
+
+class FormViewModel(private val repository: Repository) : ViewModel() {
+
+    var myResponse: MutableLiveData<Response<String>> = MutableLiveData()
+
 
     //to hide and show the form
     var isVisible: Boolean = false
@@ -38,7 +39,7 @@ class FormViewModel : ViewModel() {
 
 
     // Method to validate the form
-    fun validate(name: String?,email: String?, confirmEmail:String?): Boolean {
+    private fun validate(name: String?,email: String?, confirmEmail:String?): Boolean {
 
         var isValid = true
 
@@ -61,38 +62,29 @@ class FormViewModel : ViewModel() {
         return isValid
     }
 
-    // In your ViewModel or other appropriate place in your app
-    val retrofit = Retrofit.Builder()
-        .baseUrl("https://us-central1-blinkapp-684c1.cloudfunctions.net")
-        .addConverterFactory(MoshiConverterFactory.create())
-        .build()
 
-    val userService = retrofit.create(UserService::class.java)
+    private fun pushPost(user: User) {
 
-    val scope = CoroutineScope(Dispatchers.IO)
-
-
-
-    fun sendUserData(name: String?, email: String?, confirmEmail: String?) {
-        if(validate(name, email, confirmEmail)){
-            scope.launch {
-                try {
-                    val user = name?.let {
-                        if (email != null) {
-                            User(it, email)
-                        }
-                    }
-                    val response = userService.createUser(user)
-                    if (response.isSuccessful) {
-                        Log.d("SERVER" ,response.message())
-                    } else {
-                        // There was an error sending the user data
-                    }
-                } catch (e: Exception) {
-                    // There was an error sending the user data
-                }
+            viewModelScope.launch {
+                val response = repository.sendUser(user)
+                myResponse.value = response
             }
+
+        if (myResponse.value?.isSuccessful == true){
+
         }
+
+    }
+
+    fun submitButtonClicked(name: String?,email: String?,confirmEmail: String?){
+
+        var valid = validate(name,email,confirmEmail)
+
+        if(valid){
+            val user = User(name!!, email!!)
+            pushPost(user)
+        }
+
 
     }
 
