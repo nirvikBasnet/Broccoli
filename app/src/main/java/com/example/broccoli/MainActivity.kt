@@ -72,11 +72,21 @@ class MainActivity : AppCompatActivity() {
 
         }
 
+
+        //while getting data
         viewModel.isLoading.observe(this){
             if(it){
                 binding.submitBtn.setText("Submitting...")
+                binding.nameLayout.isEnabled = false
+                binding.emailLayout.isEnabled = false
+                binding.confirmEmailLayout.isEnabled = false
+                binding.inviteBtn.isEnabled = false
             }else{
                 binding.submitBtn.setText("Submit")
+                binding.nameLayout.isEnabled = true
+                binding.emailLayout.isEnabled = true
+                binding.confirmEmailLayout.isEnabled = true
+                binding.inviteBtn.isEnabled = true
             }
         }
 
