@@ -1,4 +1,6 @@
 package com.example.broccoli.presentation
+import android.content.Context
+import android.widget.Toast
 import androidx.databinding.ObservableField
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,9 +13,18 @@ import kotlinx.coroutines.launch
 import retrofit2.Response
 
 
-class FormViewModel(private val repository: Repository) : ViewModel() {
+class FormViewModel(private val repository: Repository, private val context: Context) : ViewModel() {
 
     var myResponse: MutableLiveData<Response<String>> = MutableLiveData()
+    var userCanceled = MutableLiveData<Boolean>()
+    val isInviteButtonEnabled = ObservableField(true)
+    val isCancleButtonEnabled = ObservableField(false)
+    var isLoading = MutableLiveData(false)
+
+    private val sharedPref = context.getSharedPreferences("user_preferences", Context.MODE_PRIVATE)
+     val editor = sharedPref.edit()
+     val invitedKey = "is_invited"
+    var isInvited = MutableLiveData<Boolean>(sharedPref.getBoolean(invitedKey, false))
 
 
     //to hide and show the form
@@ -57,6 +68,8 @@ class FormViewModel(private val repository: Repository) : ViewModel() {
         if (confirmEmail != email) {
             confirmEmailError.set("Emails do not match")
             isValid = false
+        }else{
+            confirmEmailError.set(null)
         }
 
         return isValid
@@ -65,16 +78,17 @@ class FormViewModel(private val repository: Repository) : ViewModel() {
 
     private fun pushPost(user: User) {
 
-            viewModelScope.launch {
+           viewModelScope.launch {
+               isLoading.value = true
                 val response = repository.sendUser(user)
                 myResponse.value = response
+               isLoading.value = false
             }
 
-        if (myResponse.value?.isSuccessful == true){
-
-        }
 
     }
+
+
 
     fun submitButtonClicked(name: String?,email: String?,confirmEmail: String?){
 
@@ -87,6 +101,11 @@ class FormViewModel(private val repository: Repository) : ViewModel() {
 
 
     }
+
+    fun cancelInvitationButtonClicked(){
+        userCanceled.value = true
+    }
+
 
 
 
